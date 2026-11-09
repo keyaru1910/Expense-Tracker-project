@@ -1,14 +1,16 @@
-package model;
+package util;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 
 /**
  * Lớp hỗ trợ quản lý và đồng bộ giao diện (Theme) cho toàn bộ ứng dụng Expense Tracker.
@@ -23,28 +25,28 @@ public class GiaoDienHelper {
     private static String tenGiaoDienHienTai = THEME_TOI;
 
     /**
-     * Khởi tạo giao diện mặc định ban đầu là Giao diện Tối (FlatMacDarkLaf)
+     * Khởi tạo giao diện mặc định ban đầu là Giao diện Tối (FlatMacDarkLaf).
      */
     public static void khoiTaoGiaoDienMacDinh() {
         apDungGiaoDien(THEME_TOI);
     }
 
     /**
-     * Lấy tên giao diện hiện tại đang kích hoạt
+     * Lấy tên giao diện hiện tại đang kích hoạt.
      */
     public static String getTenGiaoDienHienTai() {
         return tenGiaoDienHienTai;
     }
 
     /**
-     * Kiểm tra xem giao diện hiện tại có phải là giao diện tối không
+     * Kiểm tra xem giao diện hiện tại có phải là giao diện tối không.
      */
     public static boolean laGiaoDienToi() {
         return FlatLaf.isLafDark();
     }
 
     /**
-     * Chuyển đổi và áp dụng giao diện theo tên được chọn
+     * Chuyển đổi và áp dụng giao diện theo tên được chọn.
      */
     public static void apDungGiaoDien(String tenGiaoDien) {
         tenGiaoDienHienTai = tenGiaoDien;
@@ -68,7 +70,7 @@ public class GiaoDienHelper {
             // Cấu hình phông chữ mặc định Segoe UI hỗ trợ tiếng Việt Unicode sắc nét
             UIManager.put("defaultFont", new Font("Segoe UI", Font.PLAIN, 15));
 
-            // Cập nhật lại UI cho tất cả cửa sổ JFrame đang mở trong ứng dụng
+            // Cập nhật lại UI cho tất cả cửa sổ Frame đang mở trong ứng dụng
             for (Frame frame : JFrame.getFrames()) {
                 SwingUtilities.updateComponentTreeUI(frame);
                 frame.invalidate();
@@ -82,7 +84,7 @@ public class GiaoDienHelper {
     }
 
     /**
-     * Áp dụng màu sắc cho Thẻ (Card container) ở giữa màn hình
+     * Áp dụng màu sắc cho Thẻ (Card container) ở giữa màn hình.
      */
     public static void apDungMauTheCard(JPanel pnlCard) {
         if (pnlCard == null) return;
@@ -94,7 +96,6 @@ public class GiaoDienHelper {
                     BorderFactory.createEmptyBorder(20, 20, 20, 20)
             ));
         } else {
-            // Giao diện Sáng / IntelliJ: Thẻ nền trắng tinh tế với đường viền xám sáng sang trọng
             pnlCard.setBackground(new Color(255, 255, 255));
             pnlCard.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(new Color(218, 222, 229), 1),
@@ -104,20 +105,20 @@ public class GiaoDienHelper {
     }
 
     /**
-     * Áp dụng màu cho tiêu đề chào mừng hoặc tiêu đề trang
+     * Áp dụng màu cho tiêu đề chào mừng hoặc tiêu đề trang.
      */
     public static void apDungMauTieuDe(JLabel lblTieuDe) {
         if (lblTieuDe == null) return;
 
         if (laGiaoDienToi()) {
-            lblTieuDe.setForeground(new Color(135, 206, 250)); // Xanh nhạt sáng (LightSkyBlue) trên nền tối
+            lblTieuDe.setForeground(new Color(135, 206, 250)); // Xanh nhạt sáng trên nền tối
         } else {
-            lblTieuDe.setForeground(new Color(2, 132, 199));   // Xanh dương đậm hiện đại, dễ đọc trên nền sáng
+            lblTieuDe.setForeground(new Color(2, 132, 199));   // Xanh dương đậm trên nền sáng
         }
     }
 
     /**
-     * Áp dụng màu và hiệu ứng hover cho các nút chức năng chính trên trang chủ
+     * Áp dụng màu và hiệu ứng hover cho các nút chức năng chính trên trang chủ.
      */
     public static void apDungMauNutChucNang(JButton btn) {
         if (btn == null) return;
@@ -130,18 +131,16 @@ public class GiaoDienHelper {
             btn.setForeground(new Color(255, 255, 255));
             btn.setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70), 1));
         } else {
-            // Giao diện sáng: Nền xám xanh nhạt, chữ màu xám đen đậm tương phản cao
             btn.setBackground(new Color(241, 245, 249));
             btn.setForeground(new Color(30, 41, 59));
             btn.setBorder(BorderFactory.createLineBorder(new Color(203, 213, 225), 1));
         }
 
-        // Gắn hiệu ứng hover (nếu chưa được gắn trước đó)
-        ganHieuUngHoverNut(btn, laGiaoDienToi());
+        ganHieuUngHoverNut(btn);
     }
 
     /**
-     * Áp dụng màu cho nút Đăng xuất (màu đỏ cảnh báo thanh lịch)
+     * Áp dụng màu cho nút Đăng xuất (màu đỏ cảnh báo thanh lịch).
      */
     public static void apDungMauNutDangXuat(JButton btnDangXuat) {
         if (btnDangXuat == null) return;
@@ -154,17 +153,16 @@ public class GiaoDienHelper {
             btnDangXuat.setForeground(new Color(255, 100, 100));
             btnDangXuat.setBorder(BorderFactory.createLineBorder(new Color(80, 50, 50), 1));
         } else {
-            // Giao diện sáng: Nền đỏ hồng phấn nhẹ nhàng, chữ đỏ tươi rõ nét
             btnDangXuat.setBackground(new Color(254, 242, 242));
             btnDangXuat.setForeground(new Color(220, 38, 38));
             btnDangXuat.setBorder(BorderFactory.createLineBorder(new Color(254, 202, 202), 1));
         }
 
-        ganHieuUngHoverDangXuat(btnDangXuat, laGiaoDienToi());
+        ganHieuUngHoverDangXuat(btnDangXuat);
     }
 
     /**
-     * Tinh chỉnh màu cho nút Quay lại hoặc nút Hủy phụ
+     * Tinh chỉnh màu cho nút Quay lại hoặc nút Hủy phụ.
      */
     public static void apDungMauNutPhu(JButton btnPhu) {
         if (btnPhu == null) return;
@@ -190,7 +188,6 @@ public class GiaoDienHelper {
     public static void cauHinhHopChonGiaoDien(JComboBox<String> themeBox) {
         if (themeBox == null) return;
 
-        // Thiết lập Renderer tùy chỉnh để màu chữ và màu nền dropdown luôn rõ nét ở cả 2 chế độ
         themeBox.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -201,17 +198,15 @@ public class GiaoDienHelper {
                 boolean dark = laGiaoDienToi();
 
                 if (isSelected) {
-                    // Mục đang được rê chuột hoặc chọn: màu xanh dương nổi bật, chữ trắng
                     label.setBackground(new Color(2, 132, 199));
                     label.setForeground(Color.WHITE);
                 } else {
-                    // Mục bình thường trong danh sách:
                     if (dark) {
                         label.setBackground(new Color(38, 40, 46));
-                        label.setForeground(new Color(230, 230, 230)); // Chữ sáng trên nền tối
+                        label.setForeground(new Color(230, 230, 230));
                     } else {
                         label.setBackground(Color.WHITE);
-                        label.setForeground(new Color(30, 41, 59));   // Chữ đậm trên nền trắng
+                        label.setForeground(new Color(30, 41, 59));
                     }
                 }
                 return label;
@@ -222,7 +217,7 @@ public class GiaoDienHelper {
     }
 
     /**
-     * Cập nhật màu sắc bên ngoài của JComboBox theo theme hiện tại
+     * Cập nhật màu sắc bên ngoài của JComboBox theo theme hiện tại.
      */
     public static void capNhatMauHopChon(JComboBox<String> themeBox) {
         if (themeBox == null) return;
@@ -239,10 +234,9 @@ public class GiaoDienHelper {
     }
 
     /**
-     * Hiệu ứng rê chuột (Hover) cho nút chức năng
+     * Hiệu ứng rê chuột (Hover) cho nút chức năng.
      */
-    private static void ganHieuUngHoverNut(JButton btn, boolean isDark) {
-        // Xóa các MouseListener hover cũ để tránh trùng lặp khi đổi giao diện nhiều lần
+    private static void ganHieuUngHoverNut(JButton btn) {
         for (java.awt.event.MouseListener ml : btn.getMouseListeners()) {
             if ("ThemeHoverListener".equals(ml.getClass().getSimpleName())) {
                 btn.removeMouseListener(ml);
@@ -273,9 +267,9 @@ public class GiaoDienHelper {
     }
 
     /**
-     * Hiệu ứng hover cho nút Đăng xuất
+     * Hiệu ứng hover cho nút Đăng xuất.
      */
-    private static void ganHieuUngHoverDangXuat(JButton btnDangXuat, boolean isDark) {
+    private static void ganHieuUngHoverDangXuat(JButton btnDangXuat) {
         for (java.awt.event.MouseListener ml : btnDangXuat.getMouseListeners()) {
             if ("DangXuatHoverListener".equals(ml.getClass().getSimpleName())) {
                 btnDangXuat.removeMouseListener(ml);
@@ -303,6 +297,37 @@ public class GiaoDienHelper {
         }
 
         btnDangXuat.addMouseListener(new DangXuatHoverListener());
+    }
+
+    /**
+     * Tải và trả về đối tượng Image của logo ứng dụng (assets/logo.png).
+     * @return Image hoặc null nếu không tìm thấy tệp
+     */
+    public static Image getLogoUngDung() {
+        try {
+            File fileLogo = new File("assets/logo.png");
+            if (fileLogo.exists()) {
+                return ImageIO.read(fileLogo);
+            }
+        } catch (Exception e) {
+            System.err.println("Không thể nạp logo ứng dụng: " + e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * Tải và trả về ImageIcon của logo với kích thước được co giãn (scale) mịn màng.
+     * @param width Chiều rộng (pixel)
+     * @param height Chiều cao (pixel)
+     * @return ImageIcon hoặc null nếu không tải được ảnh
+     */
+    public static ImageIcon getLogoIcon(int width, int height) {
+        Image img = getLogoUngDung();
+        if (img != null) {
+            Image scaled = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            return new ImageIcon(scaled);
+        }
+        return null;
     }
 }
 

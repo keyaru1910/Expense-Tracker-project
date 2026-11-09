@@ -1,20 +1,37 @@
-package model;
+package view;
+
+import util.GiaoDienHelper;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Category extends JFrame {
-    public Category(String username) {
-        // Phông chữ Segoe UI hỗ trợ tiếng Việt Unicode
+/**
+ * Màn hình Quản Lý Danh Mục (QuanLyDanhMucFrame).
+ * Cung cấp menu lựa chọn Tạo danh mục mới hoặc Xem danh sách danh mục hiện có.
+ */
+public class QuanLyDanhMucFrame extends BaseFrame {
+    private final String username;
+
+    private JButton btnTaoDanhMuc;
+    private JButton btnXemDanhMuc;
+    private JButton btnQuayLai;
+
+    public QuanLyDanhMucFrame(String username) {
+        super("Quản Lý Danh Mục - " + username, 800, 500);
+        this.username = username;
+    }
+
+    @Override
+    protected void khoiTaoThanhPhan() {
         Font fontTieuDe = new Font("Segoe UI", Font.BOLD, 28);
         Font fontNut = new Font("Segoe UI", Font.BOLD, 16);
 
         JLabel title = new JLabel("Quản Lý Danh Mục", JLabel.CENTER);
         GiaoDienHelper.apDungMauTieuDe(title);
 
-        JButton btnTaoDanhMuc = new JButton("+ Tạo danh mục mới");
-        JButton btnXemDanhMuc = new JButton("Xem danh sách danh mục");
-        JButton btnQuayLai = new JButton("Quay lại");
+        btnTaoDanhMuc = new JButton("+ Tạo danh mục mới");
+        btnXemDanhMuc = new JButton("Xem danh sách danh mục");
+        btnQuayLai = new JButton("Quay lại");
 
         GiaoDienHelper.apDungMauNutPhu(btnQuayLai);
         GiaoDienHelper.apDungMauNutChucNang(btnTaoDanhMuc);
@@ -31,7 +48,6 @@ public class Category extends JFrame {
         btnXemDanhMuc.setBounds(btnX, 170, btnWidth, btnHeight);
         btnQuayLai.setBounds(btnX, 235, btnWidth, btnHeight);
 
-        // Thẻ quản lý danh mục dạng Card căn giữa màn hình
         JPanel pnlTheDanhMuc = new JPanel();
         pnlTheDanhMuc.setLayout(null);
         pnlTheDanhMuc.setPreferredSize(new Dimension(620, 340));
@@ -42,37 +58,16 @@ public class Category extends JFrame {
         pnlTheDanhMuc.add(btnXemDanhMuc);
         pnlTheDanhMuc.add(btnQuayLai);
 
-        // Sử dụng GridBagLayout để khi phóng to toàn màn hình, menu luôn nằm chính giữa
         Container c = getContentPane();
         c.setLayout(new GridBagLayout());
         c.add(pnlTheDanhMuc);
-
-        // Sự kiện chuyển đến màn hình tạo danh mục
-        btnTaoDanhMuc.addActionListener(a -> {
-            new CreateCategory(username);
-            dispose();
-        });
-
-        // Sự kiện chuyển đến màn hình xem danh mục
-        btnXemDanhMuc.addActionListener(a -> {
-            new ViewCategory(username);
-            dispose();
-        });
-
-        // Sự kiện quay lại trang chủ
-        btnQuayLai.addActionListener(a -> {
-            new Home(username);
-            dispose();
-        });
-
-        setVisible(true);
-        setSize(800, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setTitle("Quản Lý Danh Mục");
     }
 
-    public static void main(String[] args) {
-        new Category("Atharv");
+    @Override
+    protected void dangKySuKien() {
+        btnTaoDanhMuc.addActionListener(e -> chuyenManHinh(new TaoDanhMucFrame(username)));
+        btnXemDanhMuc.addActionListener(e -> chuyenManHinh(new DanhSachDanhMucFrame(username)));
+        btnQuayLai.addActionListener(e -> chuyenManHinh(new TrangChuFrame(username)));
     }
 }
+

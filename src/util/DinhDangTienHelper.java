@@ -1,4 +1,4 @@
-package model;
+package util;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -47,10 +47,10 @@ public class DinhDangTienHelper {
         int soDauPhay = s.length() - s.replace(",", "").length();
 
         if (soDauCham > 1) {
-            // 5.000.000 -> dấu chấm là phân cách hàng nghìn
+            // Ví dụ: 5.000.000 -> dấu chấm là phân cách hàng nghìn
             s = s.replace(".", "");
         } else if (soDauPhay > 1) {
-            // 5,000,000 -> dấu phẩy là phân cách hàng nghìn
+            // Ví dụ: 5,000,000 -> dấu phẩy là phân cách hàng nghìn
             s = s.replace(",", "");
         } else if (soDauPhay == 1 && soDauCham == 0) {
             // 2,5 -> dấu phẩy là phần thập phân
@@ -62,7 +62,7 @@ public class DinhDangTienHelper {
     }
 
     /**
-     * Định dạng số thực sang chuỗi tiền VNĐ có dấu phân cách hàng nghìn (ví dụ: 5,000,000 VNĐ)
+     * Định dạng số thực sang chuỗi tiền VNĐ có dấu phân cách hàng nghìn (ví dụ: 5,000,000 VNĐ).
      */
     public static String dinhDangTienVND(double soTien) {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
@@ -72,7 +72,7 @@ public class DinhDangTienHelper {
     }
 
     /**
-     * Định dạng chỉ phần số nguyên có dấu phẩy phân cách (ví dụ: 5,000,000)
+     * Định dạng chỉ phần số nguyên có dấu phẩy phân cách (ví dụ: 5,000,000).
      */
     public static String dinhDangSo(double soTien) {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);

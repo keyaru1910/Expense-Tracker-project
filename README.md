@@ -138,10 +138,10 @@ cd ExpenseTracker
 2. Chạy toàn bộ mã lệnh trong phần [Cấu Trúc Cơ Sở Dữ Liệu](#-cấu-trúc-cơ-sở-dữ-liệu-database-schema) ở trên.
 
 ### Bước 3: Cấu hình thông tin kết nối Cơ sở dữ liệu
-Mở file `src/db/DBConnection.java` và chỉnh sửa tài khoản (`USER`) và mật khẩu (`PASSWORD`) MySQL phù hợp với máy tính của bạn:
+Mở file `src/util/DBConnection.java` và chỉnh sửa tài khoản (`USER`) và mật khẩu (`PASSWORD`) MySQL phù hợp với máy tính của bạn:
 
 ```java
-package db;
+package util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -149,7 +149,7 @@ import java.sql.SQLException;
 
 public class DBConnection {
     // Đảm bảo có tham số mã hóa UTF-8 để lưu và hiển thị tiếng Việt chính xác
-    private static final String URL = "jdbc:mysql://localhost:3306/expense_tracker?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC";
+    private static final String URL = "jdbc:mysql://localhost:3306/expense_tracker?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh";
     private static final String USER = "root";              // Thay bằng tên đăng nhập MySQL của bạn
     private static final String PASSWORD = "your_password"; // Thay bằng mật khẩu MySQL của bạn
 
@@ -173,12 +173,29 @@ public class DBConnection {
 
 ---
 
+## 🏛️ Kiến Trúc Phân Tầng Chuẩn Hướng Đối Tượng (OOP Architecture)
+
+Dự án được tái cấu trúc toàn diện theo mô hình phân tầng **MVC + DAO (Data Access Object)**, đáp ứng trọn vẹn các nguyên lý lập trình hướng đối tượng (OOP):
+- **Đóng gói (Encapsulation)**: Các thuộc tính được bảo vệ (private/protected), truy xuất qua Getter/Setter chuẩn mực.
+- **Kế thừa (Inheritance)**: 
+  - Lớp `GiaoDich` là lớp cha trừu tượng (abstract class) được kế thừa bởi `KhoanThu` và `KhoanChi`.
+  - Lớp `BaseFrame` là lớp cha khung giao diện được kế thừa bởi toàn bộ 9 màn hình Swing JFrame.
+- **Đa hình (Polymorphism)**:
+  - Các lớp con ghi đè phương thức trừu tượng `getLoaiHienThi()`, `getMauSacMacDinh()`.
+  - Tầng DAO tự động ánh xạ dữ liệu CSDL thành các đối tượng `KhoanThu` hoặc `KhoanChi` theo cột `type`.
+- **Trừu tượng hóa (Abstraction & Interfaces)**:
+  - `IBaseDAO<T>`: Interface generic định nghĩa các hành vi CRUD chuẩn.
+  - Các Interface chuyên biệt: `INguoiDungDAO`, `IDanhMucDAO`, `IGiaoDichDAO`.
+
+---
+
 ## 📂 Cấu Trúc Thư Mục Dự Án
 
-```
+```text
 ExpenseTracker-main/
 │
-├── assets/                          # Hình ảnh chụp giao diện minh họa cho tài liệu
+├── assets/                          # Hình ảnh chụp giao diện minh họa và Logo
+│   ├── logo.png                     # Logo biểu tượng ví tiền của ứng dụng
 │   ├── login.png                    # Giao diện Đăng nhập
 │   ├── register.png                 # Giao diện Đăng ký
 │   ├── homepage.png                 # Giao diện Trang chủ
@@ -197,24 +214,45 @@ ExpenseTracker-main/
 ├── src/                             # Mã nguồn chính của ứng dụng
 │   ├── Main.java                    # Lớp khởi động chính của chương trình
 │   │
-│   ├── db/                          # Gói quản lý kết nối cơ sở dữ liệu
-│   │   └── DBConnection.java        # Quản trị kết nối JDBC tới MySQL
+│   ├── model/                       # [TẦNG THỰC THỂ DỮ LIỆU - ENTITY / POJO]
+│   │   ├── NguoiDung.java           # Thực thể Người dùng (User Entity)
+│   │   ├── DanhMuc.java             # Thực thể Danh mục (Category Entity)
+│   │   ├── GiaoDich.java            # Lớp trừu tượng Giao dịch (Abstract Class)
+│   │   ├── KhoanThu.java            # Giao dịch Thu nhập (extends GiaoDich)
+│   │   └── KhoanChi.java            # Giao dịch Chi tiêu (extends GiaoDich)
 │   │
-│   └── model/                       # Gói chứa các màn hình và tiện ích hỗ trợ
-│       ├── AddExpense.java          # Màn hình ghi chép khoản thu/chi
-│       ├── Analytics.java           # Màn hình thống kê biểu đồ theo tháng/năm
-│       ├── Category.java            # Lớp đối tượng biểu diễn danh mục
-│       ├── CreateCategory.java      # Màn hình tạo danh mục mới và chọn màu
-│       ├── DanhMucHelper.java       # Tiện ích khởi tạo danh mục mặc định cho user
-│       ├── DinhDangTienHelper.java  # Tiện ích quy đổi gõ tắt và định dạng tiền tệ VNĐ
-│       ├── GiaoDienHelper.java      # Tiện ích quản lý và đồng bộ Theme giao diện
-│       ├── Home.java                # Màn hình Trang chủ (Dashboard)
-│       ├── LoginPage.java           # Màn hình Đăng nhập tài khoản
-│       ├── RegisterPage.java        # Màn hình Đăng ký tài khoản
-│       ├── ViewCategory.java        # Màn hình Xem, sửa, xóa danh mục
-│       └── ViewExpense.java         # Màn hình Lịch sử giao dịch và tìm kiếm
+│   ├── dao/                         # [TẦNG TRUY XUẤT CSDL - DATA ACCESS OBJECT]
+│   │   ├── IBaseDAO.java            # Interface cơ sở Generic <T> cho CRUD
+│   │   ├── INguoiDungDAO.java       # Interface quản lý người dùng
+│   │   ├── NguoiDungDAO.java        # Triển khai truy vấn bảng users
+│   │   ├── IDanhMucDAO.java         # Interface quản lý danh mục
+│   │   ├── DanhMucDAO.java          # Triển khai truy vấn bảng categories
+│   │   ├── IGiaoDichDAO.java        # Interface quản lý giao dịch
+│   │   └── GiaoDichDAO.java         # Triển khai truy vấn bảng transactions
+│   │
+│   ├── view/                        # [TẦNG GIAO DIỆN NGƯỜI DÙNG - SWING UI]
+│   │   ├── BaseFrame.java           # Lớp khung cơ sở trừu tượng (extends JFrame)
+│   │   ├── DangNhapFrame.java       # Màn hình Đăng nhập tài khoản
+│   │   ├── DangKyFrame.java         # Màn hình Đăng ký tài khoản
+│   │   ├── TrangChuFrame.java       # Màn hình Trang chủ (Dashboard đa theme)
+│   │   ├── ThemGiaoDichFrame.java   # Màn hình Thêm giao dịch (bàn phím số nhanh)
+│   │   ├── LichSuGiaoDichFrame.java # Màn hình Lịch sử giao dịch (lọc & cảnh báo)
+│   │   ├── QuanLyDanhMucFrame.java  # Menu điều hướng quản lý danh mục
+│   │   ├── TaoDanhMucFrame.java     # Màn hình Tạo danh mục kèm chọn bảng màu
+│   │   ├── DanhSachDanhMucFrame.java# Màn hình Xem, sửa trực tiếp và xóa danh mục
+│   │   └── ThongKeBieuDoFrame.java  # Màn hình Biểu đồ JFreeChart 12 tháng
+│   │
+│   ├── util/                        # [TẦNG TIỆN ÍCH DÙNG CHUNG - UTILITIES]
+│   │   ├── DBConnection.java        # Quản lý kết nối JDBC MySQL (UTF-8)
+│   │   ├── DinhDangTienHelper.java  # Hỗ trợ gõ tắt (50k, 5tr) và định dạng VNĐ
+│   │   ├── GiaoDienHelper.java      # Quản lý và đồng bộ 3 Theme FlatLaf
+│   │   └── TaoDuLieuMauHelper.java  # Tiện ích nạp tự động dữ liệu mẫu 12 tháng phục vụ Demo
+│   │
+│   └── db/                          # [ADAPTER TƯƠNG THÍCH NGƯỢC]
+│       └── DBConnection.java        # Chuyển tiếp kết nối sang util.DBConnection
 │
 ├── SmartExpenseTracker.iml          # Tệp cấu hình module của IntelliJ IDEA
+├── dulieu_mau_1nam.sql              # Tệp SQL nạp dữ liệu mẫu 1 năm (12 tháng) để demo
 └── README.md                        # Tài liệu hướng dẫn sử dụng tiếng Việt
 ```
 
@@ -233,6 +271,10 @@ ExpenseTracker-main/
 5. **Theo dõi và thống kê**:
    - Chọn **"Xem lịch sử giao dịch"** để theo dõi số dư tổng, tìm kiếm hoặc chỉnh sửa/xóa giao dịch.
    - Chọn **"Thống kê & Phân tích"** để theo dõi biểu đồ cột biến động thu chi qua từng tháng.
+6. **Nạp dữ liệu mẫu 1 năm để Demo ngay lập tức**:
+   - **Cách 1 (Ngay trên giao diện)**: Tại màn hình **Trang Chủ**, nhấn nút **`⭐ Nạp dữ liệu mẫu 1 năm (Demo)`**. Hệ thống sẽ tự động tạo ngay hơn 100 giao dịch thực tế trải dài 12 tháng của năm 2025 và 2026 cho tài khoản hiện tại.
+   - **Cách 2 (Chạy file Java)**: Mở file `src/util/TaoDuLieuMauHelper.java`, nhấn chuột phải chọn **Run 'TaoDuLieuMauHelper.main()'**.
+   - **Cách 3 (Chạy script SQL)**: Thực thi tệp `dulieu_mau_1nam.sql` trực tiếp trong MySQL Workbench / phpMyAdmin / DBeaver. Mặc định tạo tài khoản `demo` (mật khẩu: `123456`).
 
 ---
 
