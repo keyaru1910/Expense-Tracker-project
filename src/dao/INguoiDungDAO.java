@@ -3,7 +3,8 @@ package dao;
 import model.NguoiDung;
 
 /**
- * Interface INguoiDungDAO định nghĩa các thao tác quản lý tài khoản người dùng.
+ * Interface INguoiDungDAO định nghĩa các thao tác quản lý tài khoản người dùng
+ * và các chức năng quản trị hệ thống dành cho Admin.
  */
 public interface INguoiDungDAO extends IBaseDAO<NguoiDung> {
     /**
@@ -35,5 +36,35 @@ public interface INguoiDungDAO extends IBaseDAO<NguoiDung> {
      * @return ID người dùng hoặc -1 nếu không tồn tại
      */
     int layIdTheoUsername(String username);
-}
 
+    /**
+     * Khóa hoặc mở khóa tài khoản người dùng (Dành cho Admin).
+     * @param id mã người dùng
+     * @param trangThaiMoi "ACTIVE" hoặc "LOCKED"
+     * @return true nếu thành công
+     */
+    boolean khoaMoKhoaTaiKhoan(int id, String trangThaiMoi);
+
+    /**
+     * Đặt lại mật khẩu mới cho người dùng (Dành cho Admin).
+     * @param id mã người dùng
+     * @param matKhauMoi mật khẩu mới
+     * @return true nếu thành công
+     */
+    boolean datLaiMatKhau(int id, String matKhauMoi);
+
+    /**
+     * Đếm tổng số lượng người dùng trong hệ thống (KPIs Admin).
+     */
+    int layTongSoNguoiDung();
+
+    /**
+     * Đếm tổng số lượng giao dịch đã thực hiện trong toàn bộ hệ thống.
+     */
+    int layTongSoGiaoDichHeThong();
+
+    /**
+     * Tính tổng số tiền giao dịch đã luân chuyển trong toàn bộ hệ thống.
+     */
+    double layTongTienGiaoDichHeThong();
+}

@@ -17,6 +17,7 @@ import java.awt.*;
 public class DangKyFrame extends BaseFrame {
     private final INguoiDungDAO nguoiDungDAO = new NguoiDungDAO();
     private final IDanhMucDAO danhMucDAO = new DanhMucDAO();
+    private final dao.IViTienDAO viTienDAO = new dao.ViTienDAO();
 
     private JTextField txtTenDangNhap;
     private JTextField txtEmail;
@@ -174,6 +175,15 @@ public class DangKyFrame extends BaseFrame {
         if (thanhCong) {
             // Tự động khởi tạo bộ danh mục mẫu cho người dùng mới
             danhMucDAO.khoiTaoDanhMucNeuChuaCo(username);
+
+            // Tự động khởi tạo 2 ví mặc định (Ví Tiền mặt và Tài khoản Ngân hàng)
+            int userId = nguoiDungMoi.getId();
+            if (userId <= 0) {
+                userId = nguoiDungDAO.layIdTheoUsername(username);
+            }
+            if (userId > 0) {
+                viTienDAO.khoiTaoViMacDinh(userId);
+            }
 
             JOptionPane.showMessageDialog(this,
                     "Đăng ký tài khoản thành công! Bạn có thể đăng nhập ngay.",

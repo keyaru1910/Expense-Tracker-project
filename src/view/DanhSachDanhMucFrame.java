@@ -180,7 +180,7 @@ public class DanhSachDanhMucFrame extends BaseFrame {
 
         List<DanhMuc> ds = danhMucDAO.layDanhSachTheoUsername(username);
         for (DanhMuc dm : ds) {
-            tableModel.addRow(new Object[]{dm.getName(), dm.getColorHex(), "💾 Lưu", "🗑️ Xóa"});
+            tableModel.addRow(new Object[]{dm.getName(), dm.getColorHex(), "Lưu", "Xóa"});
             categoryIds.add(dm.getId());
         }
     }

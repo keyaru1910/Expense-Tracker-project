@@ -1,4 +1,5 @@
 import util.DBConnection;
+import util.DatabaseCapNhatHelper;
 import util.GiaoDienHelper;
 import view.DangNhapFrame;
 
@@ -7,17 +8,19 @@ import java.sql.Connection;
 
 /**
  * Lớp khởi chạy ứng dụng chính (Main Entry Point).
- * Khởi tạo giao diện FlatLaf, kiểm tra kết nối CSDL MySQL và mở màn hình Đăng nhập.
+ * Khởi tạo giao diện FlatLaf, kiểm tra & nâng cấp CSDL MySQL và mở màn hình Đăng nhập.
  */
 public class Main {
     public static void main(String[] args) {
         // 1. Thiết lập giao diện mặc định là FlatLaf Dark và font tiếng Việt Unicode
         GiaoDienHelper.khoiTaoGiaoDienMacDinh();
 
-        // 2. Kiểm tra kết nối cơ sở dữ liệu MySQL
+        // 2. Kiểm tra kết nối và tự động cập nhật cấu trúc cơ sở dữ liệu MySQL
         try (Connection conn = DBConnection.getConnection()) {
             if (conn != null && !conn.isClosed()) {
                 System.out.println("✅ Kết nối đến cơ sở dữ liệu MySQL thành công!");
+                // Tự động kiểm tra và nâng cấp CSDL (Phân quyền Admin, Đa ví, Giao dịch)
+                DatabaseCapNhatHelper.kiemTraVaNangCapDatabase();
             }
         } catch (Exception e) {
             System.err.println("❌ Kết nối cơ sở dữ liệu thất bại:");

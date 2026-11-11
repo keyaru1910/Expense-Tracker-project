@@ -8,7 +8,7 @@
 
 **Smart Expense Tracker** là ứng dụng máy tính (Desktop Application) được phát triển bằng **Java Swing** hiện đại kết hợp với cơ sở dữ liệu **MySQL**. Ứng dụng giúp người dùng ghi chép, theo dõi, phân loại và phân tích các khoản thu chi cá nhân một cách nhanh chóng, trực quan và khoa học.
 
-Đặc biệt, ứng dụng đã được tối ưu hóa toàn diện cho người dùng Việt Nam: giao diện tiếng Việt hoàn chỉnh, hỗ trợ định dạng tiền tệ VNĐ với tính năng gõ tắt thông minh (50k, 5tr, 1ty), tự động tạo danh mục chuẩn, cùng hệ thống chuyển đổi giao diện linh hoạt (Giao diện Tối, Giao diện Sáng, IntelliJ).
+Đặc biệt, hệ thống đã được nâng cấp toàn diện các tính năng chuẩn doanh nghiệp: **Phân quyền Quản trị viên (Admin Panel)**, **Quản lý Đa ví tiền & Chuyển tiền nội bộ (Multi-Wallet)**, **Xuất báo cáo tài chính đa kỳ (Ngày/Tháng/Quý/Năm) ra Excel và HTML in PDF**, cùng hệ thống giao diện tiếng Việt và chuyển đổi theme FlatLaf linh hoạt.
 
 ---
 
@@ -16,55 +16,70 @@
 
 | Đăng Nhập | Đăng Ký Tài Khoản |
 | :---: | :---: |
-| ![Màn hình đăng nhập](assets/login.png)<br>_Màn hình đăng nhập người dùng_ | ![Màn hình đăng ký](assets/register.png)<br>_Biểu mẫu tạo tài khoản người dùng mới_ |
+| ![Màn hình đăng nhập](assets/login.png)<br>_Màn hình đăng nhập hỗ trợ phân quyền Admin/User_ | ![Màn hình đăng ký](assets/register.png)<br>_Biểu mẫu tạo tài khoản người dùng mới (tự cấp danh mục & ví)_ |
 
-| Trang Chủ (Dashboard) | Thêm Khoản Thu / Chi |
+| Trang Chủ (Dashboard 2 Cột) | Thêm Khoản Thu / Chi |
 | :---: | :---: |
-| ![Trang chủ](assets/homepage.png)<br>_Bảng điều khiển chính, cho phép chuyển đổi Theme và điều hướng nhanh_ | ![Thêm giao dịch](assets/addexpense.png)<br>_Giao diện thêm giao dịch với nút bấm tiền tệ nhanh và xem trước_ |
+| ![Trang chủ](assets/homepage.png)<br>_Bảng điều khiển chính, điều hướng Đa ví, Báo cáo và Theme_ | ![Thêm giao dịch](assets/addexpense.png)<br>_Giao diện thêm giao dịch với chọn Ví nguồn và nút bấm số tiền nhanh_ |
 
 | Lịch Sử Giao Dịch | Thống Kê & Phân Tích Biểu Đồ |
 | :---: | :---: |
-| ![Danh sách giao dịch](assets/transactions.png)<br>_Quản lý, tìm kiếm, lọc và cảnh báo số dư tối thiểu_ | ![Biểu đồ phân tích](assets/Analytics.png)<br>_Biểu đồ cột so sánh thu - chi theo 12 tháng, hỗ trợ lọc theo năm_ |
-
-| Tạo Danh Mục Mới | Quản Lý Danh Mục |
-| :---: | :---: |
-| ![Tạo danh mục mới](assets/createcategory.png)<br>_Thêm danh mục kèm bảng chọn mã màu tùy chỉnh_ | ![Quản lý danh mục](assets/managecategory.png)<br>_Xem danh sách, chỉnh sửa màu sắc và xóa danh mục dễ dàng_ |
+| ![Danh sách giao dịch](assets/transactions.png)<br>_Hiển thị ví thanh toán, tìm kiếm, lọc và cảnh báo số dư an toàn_ | ![Biểu đồ phân tích](assets/Analytics.png)<br>_Biểu đồ cột so sánh thu - chi theo 12 tháng, hỗ trợ lọc theo năm_ |
 
 ---
 
-## ✨ Tính Năng Nổi Bật
+## ✨ Các Tính Năng Nổi Bật
 
-### 🔐 1. Xác thực & Phân quyền người dùng
-- Đăng ký và đăng nhập bảo mật với tài khoản cá nhân.
-- Dữ liệu chi tiêu và danh mục được cô lập riêng biệt theo từng tài khoản.
+### 👑 1. Phân quyền Quản trị viên (Admin Panel)
+- **Hệ thống phân quyền Role-based**: Phân tách rõ ràng giữa tài khoản người dùng (`USER`) và Quản trị viên (`ADMIN`).
+- **Tài khoản Admin mặc định**: `username: admin` | `password: admin123`.
+- **Thẻ thống kê hệ thống (KPI Cards)**: Xem tổng số lượng thành viên, tổng số giao dịch và tổng dòng tiền luân chuyển trên toàn hệ thống.
+- **Quản lý người dùng toàn diện**:
+  - Xem danh sách thành viên chi tiết.
+  - **Khóa / Mở khóa tài khoản**: Chặn tức thì các tài khoản vi phạm không cho đăng nhập.
+  - **Đặt lại mật khẩu**: Hỗ trợ cấp lại mật khẩu cho thành viên.
+  - Xóa tài khoản người dùng kèm theo dữ liệu liên quan.
 
-### ⚡ 2. Nhập liệu tiền tệ thông minh (Smart Input)
-- **Gõ tắt nhanh chóng**: Hỗ trợ nhận diện các ký hiệu phổ biến tại Việt Nam như `50k`, `500k`, `2.5tr`, `5m`, `1ty` mà không cần gõ nhiều số `0`.
-- **Hàng phím bấm số tiền nhanh**: Tích hợp các nút tiện ích `+000`, `+50k`, `+100k`, `+500k`, `+1tr`, `+5tr`, `Xóa` giúp nhập liệu tức thì chỉ với một cú nhấp chuột.
-- **Xem trước quy đổi trực quan**: Tự động chuyển đổi và hiển thị định dạng số tiền chuẩn tiếng Việt ngay khi người dùng nhập liệu (ví dụ: `5.000.000 VNĐ`).
+### 💳 2. Quản lý Đa ví tiền & Nguồn tiền (Multi-Wallet)
+- **Tự động cấp ví**: Mỗi tài khoản đăng ký mới tự động được cấp sẵn 2 ví: *Ví Tiền mặt* và *Tài khoản Ngân hàng*.
+- **Tùy biến nguồn tiền**: Thêm không giới hạn các ví như *Ví MoMo, Ví ZaloPay, Sổ Tiết kiệm, Thẻ tín dụng*.
+- **Theo dõi Tổng tài sản**: Tự động tính toán tổng số dư của tất cả các ví theo thời gian thực.
+- **Chuyển tiền giữa các ví (Fund Transfer)**: Chuyển tiền từ ví này sang ví khác (Ví dụ: Rút từ Ngân hàng sang Tiền mặt) với cơ chế bảo vệ giao dịch (Database Transaction ACID Rollback).
+- **Liên kết giao dịch**: Khi thêm khoản thu/chi, số dư của ví được chọn sẽ tự động được cộng hoặc trừ tương ứng. Khi xóa giao dịch, hệ thống tự động hoàn tiền vào ví.
 
-### 🏷️ 3. Quản lý danh mục linh hoạt
-- **Tự động khởi tạo danh mục mẫu**: Tự động cấp sẵn 9 danh mục thiết yếu kèm màu sắc bắt mắt ngay khi tạo tài khoản mới: *Ăn uống, Mua sắm, Di chuyển, Hóa đơn & Tiện ích, Giải trí, Sức khỏe, Tiền lương, Thưởng & Đầu tư, Khác*.
-- **Tùy biến không giới hạn**: Dễ dàng tạo thêm danh mục mới, chọn màu đại diện bằng bảng màu trực quan (Color Chooser).
-- **Chỉnh sửa trực tiếp**: Chỉnh sửa tên, mã màu hoặc xóa danh mục ngay trên giao diện bảng danh sách.
+### 📑 3. Xuất Báo Cáo Tài Chính Đa Kỳ (Ngày / Tháng / Quý / Năm)
+- **Lựa chọn kỳ báo cáo đa năng**:
+  - **Theo Ngày**: Xem báo cáo chi tiết một ngày bất kỳ.
+  - **Theo Tháng**: Báo cáo thu chi theo từng tháng trong năm.
+  - **Theo Quý**: Báo cáo theo Quý 1, Quý 2, Quý 3, Quý 4.
+  - **Theo Cả Năm**: Báo cáo tổng thể tình hình tài chính trong năm.
+- **Nội dung báo cáo chuẩn mực**:
+  - Tổng Thu, Tổng Chi, Tiết Kiệm Ròng / Thặng Dư, Tỷ lệ tiết kiệm (%).
+  - Bảng cơ cấu chi tiêu theo danh mục kèm tỷ trọng (%).
+  - Bảng kê chi tiết toàn bộ các giao dịch phát sinh trong kỳ.
+- **Hai định dạng xuất file chuyên nghiệp**:
+  - **Xuất File Microsoft Excel (.csv)**: Nhúng mã Unicode UTF-8 BOM (`\uFEFF`) giúp mở trực tiếp trên Excel mà **hoàn toàn không bị lỗi font tiếng Việt**.
+  - **Xuất Báo Cáo HTML / In PDF**: Bản in định dạng HTML5 responsive cực đẹp, có nút bấm in hoặc lưu ra file PDF chuẩn chỉ với một cú nhấp chuột.
 
-### 📋 4. Quản lý lịch sử giao dịch toàn diện
-- Hiển thị danh sách giao dịch với màu sắc tương ứng theo danh mục và loại thu/chi.
-- Hộp tổng kết tài chính tức thời: **Tổng Thu Nhập**, **Tổng Chi Tiêu**, **Số Dư Hiện Tại**.
-- **Cảnh báo số dư an toàn**: Tự động phát hiện và cảnh báo khi số dư xuống dưới ngưỡng tối thiểu.
-- Bộ lọc và tìm kiếm giao dịch đa năng theo từ khóa (mô tả, danh mục) và loại giao dịch (Tất cả / Thu nhập / Chi tiêu).
-- Hỗ trợ chỉnh sửa và xóa giao dịch trực tiếp.
+### ⚡ 4. Nhập liệu tiền tệ thông minh (Smart Input)
+- **Gõ tắt nhanh chóng**: Nhận diện tức thì `50k`, `500k`, `2.5tr`, `5m`, `1ty` mà không cần gõ nhiều số `0`.
+- **Hàng phím bấm số tiền nhanh**: Tích hợp các nút tiện ích `+000`, `+50k`, `+100k`, `+500k`, `+1tr`, `+5tr`, `Xóa`.
+- **Xem trước quy đổi trực quan**: Hiển thị định dạng tiền chuẩn tiếng Việt ngay khi gõ.
 
-### 📊 5. Biểu đồ thống kê trực quan (JFreeChart)
-- Biểu đồ cột đôi so sánh trực quan giữa **Thu nhập** (Cột xanh) và **Chi tiêu** (Cột đỏ) qua 12 tháng trong năm.
-- Hỗ trợ lọc thống kê theo từng năm cụ thể hoặc tổng quan tất cả các năm.
+### 🏷️ 5. Quản lý danh mục linh hoạt
+- **Tự động khởi tạo 9 danh mục thiết yếu**: Ăn uống, Mua sắm, Di chuyển, Hóa đơn & Tiện ích, Giải trí, Sức khỏe, Tiền lương, Thưởng & Đầu tư, Khác.
+- Tùy biến màu sắc đại diện với bảng màu (Color Chooser).
 
-### 🎨 6. Giao diện FlatLaf hiện đại & Đa giao diện (Theme)
-- Hỗ trợ 3 phong cách giao diện:
-  - **Giao diện Tối (FlatMacDarkLaf)** - Hiện đại, dịu mắt (Mặc định).
-  - **Giao diện Sáng (FlatMacLightLaf)** - Tinh tế, rõ ràng.
-  - **Giao diện IntelliJ (FlatIntelliJLaf)** - Chuyên nghiệp theo phong cách IDE.
-- Bố cục responsive căn giữa tự động khi phóng to cửa sổ, phông chữ **Segoe UI** hiển thị chuẩn tiếng Việt Unicode không bị lỗi dấu.
+### 📋 6. Lịch sử giao dịch & Cảnh báo an toàn
+- Hiển thị danh sách giao dịch với màu sắc tương ứng theo danh mục, ví tiền và loại thu/chi.
+- Hộp tổng kết tài chính: Tổng Thu, Tổng Chi, Số Dư.
+- **Cảnh báo bội chi / số dư an toàn**: Báo động khi số dư dưới mức tối thiểu.
+
+### 📊 7. Biểu đồ thống kê trực quan (JFreeChart)
+- Biểu đồ cột đôi so sánh trực quan giữa **Thu nhập** (Cột xanh) và **Chi tiêu** (Cột đỏ) qua 12 tháng.
+
+### 🎨 8. Đa giao diện FlatLaf (Theme)
+- Hỗ trợ 3 phong cách giao diện: **Giao diện Tối (FlatMacDarkLaf)**, **Giao diện Sáng (FlatMacLightLaf)**, và **Giao diện IntelliJ (FlatIntelliJLaf)**.
 
 ---
 
@@ -75,7 +90,7 @@
 | **Ngôn ngữ** | Java (JDK) | 17+ | Ngôn ngữ lập trình chính |
 | **Giao diện** | Java Swing / AWT | Tích hợp sẵn | Xây dựng các cửa sổ và thành phần UI |
 | **Theme UI** | FlatLaf | 3.6 | Look and Feel giao diện phẳng hiện đại |
-| **Cơ sở dữ liệu** | MySQL Server | 8.x | Lưu trữ dữ liệu người dùng và giao dịch |
+| **Cơ sở dữ liệu** | MySQL Server | 8.x | Lưu trữ dữ liệu người dùng, ví và giao dịch |
 | **Kết nối CSDL** | MySQL Connector/J | 9.3.0 | Driver JDBC kết nối ứng dụng với MySQL |
 | **Vẽ biểu đồ** | JFreeChart | 1.5.3 | Thư viện biểu đồ thống kê chuyên nghiệp |
 | **Thư viện phụ trợ** | JCommon | 1.0.24 | Hỗ trợ xử lý hiển thị cho JFreeChart |
@@ -84,7 +99,7 @@
 
 ## 🗄️ Cấu Trúc Cơ Sở Dữ Liệu (Database Schema)
 
-Tạo cơ sở dữ liệu và các bảng cần thiết trên MySQL bằng đoạn mã SQL dưới đây:
+Ứng dụng có cơ chế **Auto-Migration tự động kiểm tra và nâng cấp CSDL** khi khởi chạy. Bạn cũng có thể chủ động tạo CSDL trên MySQL bằng đoạn mã sau:
 
 ```sql
 -- 1. Tạo cơ sở dữ liệu với bảng mã UTF-8 hỗ trợ tiếng Việt
@@ -99,8 +114,15 @@ CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100),
-    password VARCHAR(100) NOT NULL
+    password VARCHAR(100) NOT NULL,
+    vai_tro VARCHAR(20) NOT NULL DEFAULT 'USER',
+    trang_thai VARCHAR(20) NOT NULL DEFAULT 'ACTIVE'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tạo tài khoản Admin mặc định (mật khẩu: admin123)
+INSERT INTO users (username, email, password, vai_tro, trang_thai) 
+VALUES ('admin', 'admin@expensetracker.vn', 'admin123', 'ADMIN', 'ACTIVE')
+ON DUPLICATE KEY UPDATE vai_tro = 'ADMIN', trang_thai = 'ACTIVE';
 
 -- 3. Bảng lưu trữ danh mục thu/chi (categories)
 CREATE TABLE IF NOT EXISTS categories (
@@ -111,7 +133,18 @@ CREATE TABLE IF NOT EXISTS categories (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 4. Bảng lưu trữ chi tiết các giao dịch (transactions)
+-- 4. Bảng lưu trữ danh sách Đa ví tiền (vi_tien)
+CREATE TABLE IF NOT EXISTS vi_tien (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    ten_vi VARCHAR(100) NOT NULL,
+    loai_vi VARCHAR(50) NOT NULL DEFAULT 'TIEN_MAT',
+    so_du DECIMAL(15,2) NOT NULL DEFAULT 0,
+    ghi_chu VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 5. Bảng lưu trữ chi tiết các giao dịch (transactions)
 CREATE TABLE IF NOT EXISTS transactions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
@@ -119,73 +152,27 @@ CREATE TABLE IF NOT EXISTS transactions (
     description VARCHAR(255),
     amount DECIMAL(15,2) NOT NULL,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    type ENUM('income', 'expense') NOT NULL DEFAULT 'expense'
+    type ENUM('income', 'expense') NOT NULL DEFAULT 'expense',
+    vi_id INT NULL,
+    FOREIGN KEY (vi_id) REFERENCES vi_tien(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
 
 ---
 
-## 🚀 Hướng Dẫn Cài Đặt & Chạy Ứng Dụng
-
-### Bước 1: Sao chép mã nguồn (Clone repository)
-```bash
-git clone https://github.com/thisisAtharv/ExpenseTracker.git
-cd ExpenseTracker
-```
-
-### Bước 2: Thiết lập Cơ sở dữ liệu MySQL
-1. Mở công cụ quản trị MySQL của bạn (MySQL Workbench, phpMyAdmin, DBeaver hoặc MySQL CLI).
-2. Chạy toàn bộ mã lệnh trong phần [Cấu Trúc Cơ Sở Dữ Liệu](#-cấu-trúc-cơ-sở-dữ-liệu-database-schema) ở trên.
-
-### Bước 3: Cấu hình thông tin kết nối Cơ sở dữ liệu
-Mở file `src/util/DBConnection.java` và chỉnh sửa tài khoản (`USER`) và mật khẩu (`PASSWORD`) MySQL phù hợp với máy tính của bạn:
-
-```java
-package util;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
-public class DBConnection {
-    // Đảm bảo có tham số mã hóa UTF-8 để lưu và hiển thị tiếng Việt chính xác
-    private static final String URL = "jdbc:mysql://localhost:3306/expense_tracker?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh";
-    private static final String USER = "root";              // Thay bằng tên đăng nhập MySQL của bạn
-    private static final String PASSWORD = "your_password"; // Thay bằng mật khẩu MySQL của bạn
-
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
-    }
-}
-```
-
-### Bước 4: Chạy dự án bằng IntelliJ IDEA hoặc Eclipse
-1. Mở thư mục dự án bằng **IntelliJ IDEA** (hoặc IDE Java bạn yêu thích).
-2. Thêm các thư viện JAR trong thư mục `Drivers/` vào dự án:
-   - Vào `File` -> `Project Structure` -> `Libraries` -> Nhấn dấu `+` chọn `Java`.
-   - Chọn các file JAR:
-     - `Drivers/flatlaf-3.6.jar`
-     - `Drivers/jfreechart-1.5.3.jar`
-     - `Drivers/jcommon-1.0.24.jar`
-     - `Drivers/mysql-connector-j-9.3.0/mysql-connector-j-9.3.0.jar`
-   - Nhấn `Apply` và `OK`.
-3. Tìm file `src/Main.java`, nhấn chuột phải và chọn **Run 'Main.main()'** để khởi chạy ứng dụng.
-
----
-
 ## 🏛️ Kiến Trúc Phân Tầng Chuẩn Hướng Đối Tượng (OOP Architecture)
 
-Dự án được tái cấu trúc toàn diện theo mô hình phân tầng **MVC + DAO (Data Access Object)**, đáp ứng trọn vẹn các nguyên lý lập trình hướng đối tượng (OOP):
-- **Đóng gói (Encapsulation)**: Các thuộc tính được bảo vệ (private/protected), truy xuất qua Getter/Setter chuẩn mực.
+Dự án được xây dựng theo mô hình phân tầng **MVC + DAO (Data Access Object)**:
+- **Đóng gói (Encapsulation)**: Toàn bộ thuộc tính trong các Entity (`NguoiDung`, `ViTien`, `GiaoDich`, `DanhMuc`, `BaoCaoTaiChinh`) đều được bảo vệ private/protected và truy xuất qua Getter/Setter.
 - **Kế thừa (Inheritance)**: 
   - Lớp `GiaoDich` là lớp cha trừu tượng (abstract class) được kế thừa bởi `KhoanThu` và `KhoanChi`.
-  - Lớp `BaseFrame` là lớp cha khung giao diện được kế thừa bởi toàn bộ 9 màn hình Swing JFrame.
+  - Lớp `BaseFrame` là lớp cha khung giao diện được kế thừa bởi tất cả các màn hình Swing JFrame (`AdminTrangChuFrame`, `QuanLyViFrame`, `XuatBaoCaoFrame`,...).
 - **Đa hình (Polymorphism)**:
   - Các lớp con ghi đè phương thức trừu tượng `getLoaiHienThi()`, `getMauSacMacDinh()`.
   - Tầng DAO tự động ánh xạ dữ liệu CSDL thành các đối tượng `KhoanThu` hoặc `KhoanChi` theo cột `type`.
 - **Trừu tượng hóa (Abstraction & Interfaces)**:
   - `IBaseDAO<T>`: Interface generic định nghĩa các hành vi CRUD chuẩn.
-  - Các Interface chuyên biệt: `INguoiDungDAO`, `IDanhMucDAO`, `IGiaoDichDAO`.
+  - Các Interface chuyên biệt: `INguoiDungDAO`, `IViTienDAO`, `IDanhMucDAO`, `IGiaoDichDAO`.
 
 ---
 
@@ -193,17 +180,6 @@ Dự án được tái cấu trúc toàn diện theo mô hình phân tầng **MV
 
 ```text
 ExpenseTracker-main/
-│
-├── assets/                          # Hình ảnh chụp giao diện minh họa và Logo
-│   ├── logo.png                     # Logo biểu tượng ví tiền của ứng dụng
-│   ├── login.png                    # Giao diện Đăng nhập
-│   ├── register.png                 # Giao diện Đăng ký
-│   ├── homepage.png                 # Giao diện Trang chủ
-│   ├── addexpense.png               # Giao diện Thêm khoản thu/chi
-│   ├── transactions.png             # Giao diện Lịch sử giao dịch
-│   ├── Analytics.png                # Giao diện Biểu đồ thống kê
-│   ├── createcategory.png           # Giao diện Tạo danh mục mới
-│   └── managecategory.png           # Giao diện Quản lý danh mục
 │
 ├── Drivers/                         # Các thư viện bổ trợ (JARs)
 │   ├── flatlaf-3.6.jar              # Thư viện giao diện FlatLaf
@@ -215,28 +191,36 @@ ExpenseTracker-main/
 │   ├── Main.java                    # Lớp khởi động chính của chương trình
 │   │
 │   ├── model/                       # [TẦNG THỰC THỂ DỮ LIỆU - ENTITY / POJO]
-│   │   ├── NguoiDung.java           # Thực thể Người dùng (User Entity)
+│   │   ├── NguoiDung.java           # Thực thể Người dùng (Hỗ trợ vai trò ADMIN & trạng thái)
+│   │   ├── ViTien.java              # Thực thể Ví tiền (Đa ví: Tiền mặt, Ngân hàng, Ví điện tử)
+│   │   ├── BaoCaoTaiChinh.java      # Thực thể Báo cáo tài chính đa kỳ (Ngày/Tháng/Quý/Năm)
 │   │   ├── DanhMuc.java             # Thực thể Danh mục (Category Entity)
-│   │   ├── GiaoDich.java            # Lớp trừu tượng Giao dịch (Abstract Class)
+│   │   ├── GiaoDich.java            # Lớp trừu tượng Giao dịch (Abstract Class tích hợp viId)
 │   │   ├── KhoanThu.java            # Giao dịch Thu nhập (extends GiaoDich)
 │   │   └── KhoanChi.java            # Giao dịch Chi tiêu (extends GiaoDich)
 │   │
 │   ├── dao/                         # [TẦNG TRUY XUẤT CSDL - DATA ACCESS OBJECT]
 │   │   ├── IBaseDAO.java            # Interface cơ sở Generic <T> cho CRUD
-│   │   ├── INguoiDungDAO.java       # Interface quản lý người dùng
-│   │   ├── NguoiDungDAO.java        # Triển khai truy vấn bảng users
+│   │   ├── INguoiDungDAO.java       # Interface quản lý người dùng & phân quyền Admin
+│   │   ├── NguoiDungDAO.java        # Triển khai truy vấn bảng users (khóa/mở tài khoản, KPIs)
+│   │   ├── IViTienDAO.java          # Interface quản lý Đa ví & luân chuyển dòng tiền
+│   │   ├── ViTienDAO.java           # Triển khai CRUD bảng vi_tien & Transaction chuyển tiền
 │   │   ├── IDanhMucDAO.java         # Interface quản lý danh mục
 │   │   ├── DanhMucDAO.java          # Triển khai truy vấn bảng categories
 │   │   ├── IGiaoDichDAO.java        # Interface quản lý giao dịch
-│   │   └── GiaoDichDAO.java         # Triển khai truy vấn bảng transactions
+│   │   └── GiaoDichDAO.java         # Triển khai giao dịch, cập nhật số dư ví & lọc đa kỳ
 │   │
 │   ├── view/                        # [TẦNG GIAO DIỆN NGƯỜI DÙNG - SWING UI]
 │   │   ├── BaseFrame.java           # Lớp khung cơ sở trừu tượng (extends JFrame)
-│   │   ├── DangNhapFrame.java       # Màn hình Đăng nhập tài khoản
-│   │   ├── DangKyFrame.java         # Màn hình Đăng ký tài khoản
-│   │   ├── TrangChuFrame.java       # Màn hình Trang chủ (Dashboard đa theme)
-│   │   ├── ThemGiaoDichFrame.java   # Màn hình Thêm giao dịch (bàn phím số nhanh)
-│   │   ├── LichSuGiaoDichFrame.java # Màn hình Lịch sử giao dịch (lọc & cảnh báo)
+│   │   ├── DangNhapFrame.java       # Màn hình Đăng nhập (phân quyền Admin & chặn tài khoản khóa)
+│   │   ├── DangKyFrame.java         # Màn hình Đăng ký tài khoản (tự cấp 9 danh mục & 2 ví)
+│   │   ├── TrangChuFrame.java       # Màn hình Trang chủ (Dashboard 2 cột cân xứng)
+│   │   ├── AdminTrangChuFrame.java  # Màn hình Bảng điều khiển Quản trị viên (Admin Panel)
+│   │   ├── QuanLyViFrame.java       # Màn hình Quản lý Đa ví & theo dõi tổng tài sản
+│   │   ├── ChuyenTienViFrame.java   # Màn hình Chuyển tiền nội bộ giữa các ví
+│   │   ├── XuatBaoCaoFrame.java     # Màn hình Báo cáo theo Ngày/Tháng/Quý/Năm (Excel & HTML)
+│   │   ├── ThemGiaoDichFrame.java   # Màn hình Thêm giao dịch (bàn phím số nhanh + chọn ví)
+│   │   ├── LichSuGiaoDichFrame.java # Màn hình Lịch sử giao dịch (hiển thị ví, lọc & cảnh báo)
 │   │   ├── QuanLyDanhMucFrame.java  # Menu điều hướng quản lý danh mục
 │   │   ├── TaoDanhMucFrame.java     # Màn hình Tạo danh mục kèm chọn bảng màu
 │   │   ├── DanhSachDanhMucFrame.java# Màn hình Xem, sửa trực tiếp và xóa danh mục
@@ -244,48 +228,42 @@ ExpenseTracker-main/
 │   │
 │   ├── util/                        # [TẦNG TIỆN ÍCH DÙNG CHUNG - UTILITIES]
 │   │   ├── DBConnection.java        # Quản lý kết nối JDBC MySQL (UTF-8)
+│   │   ├── DatabaseCapNhatHelper.java# Tự động đồng bộ và nâng cấp cấu trúc CSDL khi chạy
+│   │   ├── XuatBaoCaoHelper.java    # Tiện ích xuất file Excel CSV (UTF-8 BOM) & Báo cáo HTML in PDF
 │   │   ├── DinhDangTienHelper.java  # Hỗ trợ gõ tắt (50k, 5tr) và định dạng VNĐ
 │   │   ├── GiaoDienHelper.java      # Quản lý và đồng bộ 3 Theme FlatLaf
-│   │   └── TaoDuLieuMauHelper.java  # Tiện ích nạp tự động dữ liệu mẫu 12 tháng phục vụ Demo
+│   │   └── TaoDuLieuMauHelper.java  # Nạp dữ liệu mẫu 12 tháng kèm phân bổ ví tiền để demo
 │   │
 │   └── db/                          # [ADAPTER TƯƠNG THÍCH NGƯỢC]
 │       └── DBConnection.java        # Chuyển tiếp kết nối sang util.DBConnection
 │
-├── SmartExpenseTracker.iml          # Tệp cấu hình module của IntelliJ IDEA
-├── dulieu_mau_1nam.sql              # Tệp SQL nạp dữ liệu mẫu 1 năm (12 tháng) để demo
+├── build.bat                        # Script biên dịch tự động cho Windows
+├── compile.ps1                      # Script biên dịch PowerShell UTF-8
 └── README.md                        # Tài liệu hướng dẫn sử dụng tiếng Việt
 ```
 
 ---
 
-## 💡 Hướng Dẫn Sử Dụng Nhanh
+## 💡 Hướng Dẫn Sử Dụng & Demo
 
-1. **Khởi chạy ứng dụng**: Khi mở ứng dụng, màn hình đăng nhập sẽ xuất hiện. Nếu chưa có tài khoản, hãy nhấp vào `"Chưa có tài khoản? Đăng ký ngay"` để tạo tài khoản mới.
-2. **Khởi tạo danh mục**: Khi đăng ký thành công và đăng nhập lần đầu, hệ thống sẽ tự động tạo sẵn 9 danh mục chuẩn mực (Ăn uống, Mua sắm, Tiền lương,...).
-3. **Đổi giao diện (Theme)**: Tại góc trên màn hình Trang chủ, bạn có thể dễ dàng chọn giữa `Giao diện Tối`, `Giao diện Sáng` hoặc `Giao diện IntelliJ` tùy ý. Toàn bộ các màn hình sẽ tự động đồng bộ.
-4. **Nhập khoản thu / chi**:
-   - Chọn loại giao dịch: `Chi tiêu` hoặc `Thu nhập`.
-   - Chọn danh mục tương ứng.
-   - Nhập số tiền: có thể gõ tắt nhanh như `100k`, `2.5tr` hoặc bấm trực tiếp các nút chọn nhanh `+50k`, `+100k`, `+1tr`...
-   - Nhập mô tả giao dịch và bấm **"Lưu giao dịch"**.
-5. **Theo dõi và thống kê**:
-   - Chọn **"Xem lịch sử giao dịch"** để theo dõi số dư tổng, tìm kiếm hoặc chỉnh sửa/xóa giao dịch.
-   - Chọn **"Thống kê & Phân tích"** để theo dõi biểu đồ cột biến động thu chi qua từng tháng.
-6. **Nạp dữ liệu mẫu 1 năm để Demo ngay lập tức**:
-   - **Cách 1 (Ngay trên giao diện)**: Tại màn hình **Trang Chủ**, nhấn nút **`⭐ Nạp dữ liệu mẫu 1 năm (Demo)`**. Hệ thống sẽ tự động tạo ngay hơn 100 giao dịch thực tế trải dài 12 tháng của năm 2025 và 2026 cho tài khoản hiện tại.
-   - **Cách 2 (Chạy file Java)**: Mở file `src/util/TaoDuLieuMauHelper.java`, nhấn chuột phải chọn **Run 'TaoDuLieuMauHelper.main()'**.
-   - **Cách 3 (Chạy script SQL)**: Thực thi tệp `dulieu_mau_1nam.sql` trực tiếp trong MySQL Workbench / phpMyAdmin / DBeaver. Mặc định tạo tài khoản `demo` (mật khẩu: `123456`).
+### 1. Tài khoản đăng nhập sẵn có để Demo
+- **Tài khoản Quản trị viên (ADMIN)**:
+  - Tên đăng nhập: `admin`
+  - Mật khẩu: `admin123`
+  - *Xem thống kê toàn hệ thống, danh sách thành viên, khóa/mở khóa tài khoản, đặt lại mật khẩu.*
+- **Tài khoản Người dùng (USER)**:
+  - Tên đăng nhập: `demo` (hoặc đăng ký tài khoản mới tùy ý)
+  - Mật khẩu: `123456`
 
----
+### 2. Trải nghiệm tính năng Quản lý Đa ví
+1. Vào **Trang Chủ** $\rightarrow$ chọn **"💳 Quản lý Đa ví tiền"**.
+2. Xem danh sách ví, số dư và **Tổng tài sản**.
+3. Bấm **"Thêm ví mới"** để tạo thêm ví (ví dụ: *Ví MoMo, Heo đất*).
+4. Bấm **"Chuyển tiền giữa các ví"** để chuyển tiền nội bộ (ví dụ chuyển từ Ngân hàng sang Tiền mặt).
 
-## 📝 Giấy Phép (License)
-
-Dự án này được phân phối dưới giấy phép **MIT License**. Bạn có thể tự do sử dụng, chỉnh sửa và phát triển cho mục đích học tập hoặc thương mại.
-
----
-
-## 👏 Lời Cảm Ơn (Acknowledgements)
-
-- [Tài liệu chính thức Java Swing - Oracle](https://docs.oracle.com/javase/8/docs/api/javax/swing/package-summary.html)
-- [Thư viện giao diện FlatLaf - FormDev](https://www.formdev.com/flatlaf/)
-- [Thư viện biểu đồ JFreeChart](http://www.jfree.org/jfreechart/)
+### 3. Trải nghiệm tính năng Xuất Báo Cáo
+1. Vào **Trang Chủ** $\rightarrow$ chọn **"📑 Xuất Báo Cáo Đa Kỳ"**.
+2. Chọn kỳ báo cáo: **Theo Ngày**, **Theo Tháng**, **Theo Quý** (Quý 1 - 4) hoặc **Theo Năm**.
+3. Bấm **"🔍 Xem Báo Cáo"** để xem tổng kết Thu, Chi, Tiết kiệm ròng và cơ cấu danh mục.
+4. Bấm **"📊 Xuất File Excel (.csv)"** để lưu file mở bằng Excel (chữ tiếng Việt hiển thị 100% chuẩn).
+5. Bấm **"🌐 Xuất Báo Cáo HTML / In PDF"** để mở giao diện web và bấm in ra PDF đẹp mắt.

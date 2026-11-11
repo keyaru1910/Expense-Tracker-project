@@ -28,6 +28,7 @@ public class LichSuGiaoDichFrame extends BaseFrame {
     private final IGiaoDichDAO giaoDichDAO = new GiaoDichDAO();
     private final IDanhMucDAO danhMucDAO = new DanhMucDAO();
 
+    private JLabel title;
     private DefaultTableModel tableModel;
     private JTable table;
     private JComboBox<String> typeFilter;
@@ -43,8 +44,11 @@ public class LichSuGiaoDichFrame extends BaseFrame {
     private final Map<String, String> categoryColors = new HashMap<>();
 
     public LichSuGiaoDichFrame(String username) {
-        super("Lịch Sử Giao Dịch - " + username, 1000, 650);
+        super("Lịch Sử Giao Dịch - " + (username != null ? username : ""), 1000, 650);
         this.username = username;
+        if (title != null) {
+            title.setText("Lịch Sử Giao Dịch - " + (username != null ? username : ""));
+        }
         napMauDanhMuc();
         taiDuLieuLenBang("Tất cả", "");
     }
@@ -54,7 +58,7 @@ public class LichSuGiaoDichFrame extends BaseFrame {
         Font fontNhanTongKet = new Font("Segoe UI", Font.BOLD, 15);
         Font fontNut = new Font("Segoe UI", Font.BOLD, 15);
 
-        JLabel title = new JLabel("Lịch Sử Giao Dịch - " + username, JLabel.CENTER);
+        title = new JLabel("Lịch Sử Giao Dịch", JLabel.CENTER);
         title.setForeground(Color.WHITE);
         title.setBackground(new Color(0, 102, 204));
         title.setOpaque(true);
@@ -66,7 +70,7 @@ public class LichSuGiaoDichFrame extends BaseFrame {
         topPanel.add(title, BorderLayout.CENTER);
 
         // Bảng dữ liệu JTable
-        String[] columnNames = {"Danh mục", "Mô tả", "Số tiền (VNĐ)", "Thời gian", "Loại", "id"};
+        String[] columnNames = {"Danh mục", "Ví nguồn", "Mô tả", "Số tiền (VNĐ)", "Thời gian", "Loại", "id"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -81,12 +85,13 @@ public class LichSuGiaoDichFrame extends BaseFrame {
         table.getTableHeader().setForeground(Color.WHITE);
         table.setGridColor(new Color(224, 224, 224));
 
-        // Ẩn cột id (cột số 5)
-        table.getColumnModel().getColumn(5).setMinWidth(0);
-        table.getColumnModel().getColumn(5).setMaxWidth(0);
-        table.getColumnModel().getColumn(5).setWidth(0);
-        table.getColumnModel().getColumn(1).setPreferredWidth(160);
-        table.getColumnModel().getColumn(3).setPreferredWidth(160);
+        // Ẩn cột id (cột số 6)
+        table.getColumnModel().getColumn(6).setMinWidth(0);
+        table.getColumnModel().getColumn(6).setMaxWidth(0);
+        table.getColumnModel().getColumn(6).setWidth(0);
+        table.getColumnModel().getColumn(1).setPreferredWidth(120);
+        table.getColumnModel().getColumn(2).setPreferredWidth(160);
+        table.getColumnModel().getColumn(4).setPreferredWidth(160);
 
         // Đổi màu cột Danh mục theo mã màu CSDL
         table.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer() {
@@ -107,7 +112,7 @@ public class LichSuGiaoDichFrame extends BaseFrame {
         });
 
         // Đổi màu cột Loại: Thu nhập (xanh), Chi tiêu (đỏ)
-        table.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+        table.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component co = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -223,6 +228,7 @@ public class LichSuGiaoDichFrame extends BaseFrame {
         for (GiaoDich gd : ds) {
             tableModel.addRow(new Object[]{
                     gd.getCategoryName(),
+                    gd.getTenVi(),
                     gd.getDescription(),
                     DinhDangTienHelper.dinhDangSo(gd.getAmount()),
                     gd.getDateTime(),
@@ -245,9 +251,9 @@ public class LichSuGiaoDichFrame extends BaseFrame {
 
         // Cảnh báo nếu số dư xuống thấp hoặc âm
         if (soDu < 0) {
-            warningLabel.setText("⚠️ CẢNH BÁO: Bội chi ngân sách!");
+            warningLabel.setText("CẢNH BÁO: Bội chi ngân sách!");
         } else if (soDu < 200_000 && tongChi > 0) {
-            warningLabel.setText("⚠️ CẢNH BÁO: Số dư dưới mức an toàn (< 200k)!");
+            warningLabel.setText("CẢNH BÁO: Số dư dưới mức an toàn (< 200k)!");
         } else {
             warningLabel.setText("");
         }
@@ -264,10 +270,10 @@ public class LichSuGiaoDichFrame extends BaseFrame {
         }
 
         int modelRow = table.convertRowIndexToModel(row);
-        int selectedId = Integer.parseInt(tableModel.getValueAt(modelRow, 5).toString());
-        String oldDesc = table.getValueAt(row, 1).toString();
-        String oldAmount = table.getValueAt(row, 2).toString();
-        String oldDateTime = table.getValueAt(row, 3).toString();
+        int selectedId = Integer.parseInt(tableModel.getValueAt(modelRow, 6).toString());
+        String oldDesc = table.getValueAt(row, 2).toString();
+        String oldAmount = table.getValueAt(row, 3).toString();
+        String oldDateTime = table.getValueAt(row, 4).toString();
 
         String newDesc = JOptionPane.showInputDialog(this, "Chỉnh sửa mô tả:", oldDesc);
         if (newDesc == null || newDesc.trim().isEmpty()) return;
@@ -320,7 +326,7 @@ public class LichSuGiaoDichFrame extends BaseFrame {
         }
 
         int modelRow = table.convertRowIndexToModel(row);
-        int selectedId = Integer.parseInt(tableModel.getValueAt(modelRow, 5).toString());
+        int selectedId = Integer.parseInt(tableModel.getValueAt(modelRow, 6).toString());
 
         int confirm = JOptionPane.showConfirmDialog(this,
                 "Bạn có chắc chắn muốn xóa giao dịch này không?",

@@ -3,8 +3,11 @@ package util;
 import dao.DanhMucDAO;
 import dao.IDanhMucDAO;
 import dao.INguoiDungDAO;
+import dao.IViTienDAO;
 import dao.NguoiDungDAO;
+import dao.ViTienDAO;
 import model.NguoiDung;
+import model.ViTien;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -217,6 +220,22 @@ public class TaoDuLieuMauHelper {
         // 2. Tự động khởi tạo 9 danh mục chuẩn nếu chưa có
         danhMucDAO.khoiTaoDanhMucNeuChuaCo(username);
 
+        // Khởi tạo ví tiền mẫu cho người dùng nếu chưa có
+        IViTienDAO viTienDAO = new ViTienDAO();
+        viTienDAO.khoiTaoViMacDinh(userId);
+        List<ViTien> dsVi = viTienDAO.layDanhSachTheoUserId(userId);
+        Integer idViTienMat = null;
+        Integer idViNganHang = null;
+        for (ViTien v : dsVi) {
+            if ("NGAN_HANG".equalsIgnoreCase(v.getLoaiVi())) {
+                idViNganHang = v.getId();
+            } else if ("TIEN_MAT".equalsIgnoreCase(v.getLoaiVi())) {
+                idViTienMat = v.getId();
+            }
+        }
+        if (idViNganHang == null && !dsVi.isEmpty()) idViNganHang = dsVi.get(0).getId();
+        if (idViTienMat == null && !dsVi.isEmpty()) idViTienMat = dsVi.get(0).getId();
+
         // 3. Xóa các giao dịch cũ của năm đó để tránh nhân đôi dữ liệu
         String sqlXoa = "DELETE FROM transactions WHERE username = ? AND YEAR(date) = ?";
         try (Connection con = DBConnection.getConnection();
@@ -233,7 +252,10 @@ public class TaoDuLieuMauHelper {
 
         // 4. Chèn danh sách giao dịch mẫu 12 tháng
         List<GiaoDichMau> danhSach = layDanhSachGiaoDichMau1Nam(nam);
-        String sqlChen = "INSERT INTO transactions (username, category_name, description, amount, type, date) VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlChen = "INSERT INTO transactions (username, category_name, description, amount, type, date, vi_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        double thayDoiTienMat = 0;
+        double thayDoiNganHang = 0;
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement pstChen = con.prepareStatement(sqlChen)) {
@@ -246,12 +268,36 @@ public class TaoDuLieuMauHelper {
                 pstChen.setDouble(4, gd.amount);
                 pstChen.setString(5, gd.type);
                 pstChen.setString(6, gd.dateTime);
+
+                // Phân loại ví: Lương hoặc tiền trên 1 triệu thì qua Ngân hàng, còn lại Tiền mặt
+                Integer viId = (gd.amount >= 1_000_000 || "income".equalsIgnoreCase(gd.type)) ? idViNganHang : idViTienMat;
+                if (viId != null) {
+                    pstChen.setInt(7, viId);
+                    double luongTien = "income".equalsIgnoreCase(gd.type) ? gd.amount : -gd.amount;
+                    if (viId.equals(idViNganHang)) {
+                        thayDoiNganHang += luongTien;
+                    } else {
+                        thayDoiTienMat += luongTien;
+                    }
+                } else {
+                    pstChen.setNull(7, java.sql.Types.INTEGER);
+                }
+
                 pstChen.addBatch();
             }
 
             pstChen.executeBatch();
             con.commit();
             con.setAutoCommit(true);
+
+            // Cập nhật lại số dư ví tương ứng
+            if (idViNganHang != null && thayDoiNganHang != 0) {
+                viTienDAO.capNhatSoDu(idViNganHang, thayDoiNganHang);
+            }
+            if (idViTienMat != null && thayDoiTienMat != 0) {
+                viTienDAO.capNhatSoDu(idViTienMat, thayDoiTienMat);
+            }
+
             System.out.println("✅ Đã nạp thành công " + danhSach.size() + " giao dịch mẫu cho năm " + nam + " (Tài khoản: " + username + ")");
             return true;
         } catch (SQLException e) {

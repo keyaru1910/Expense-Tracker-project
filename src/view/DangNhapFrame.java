@@ -131,11 +131,29 @@ public class DangNhapFrame extends BaseFrame {
         // Gọi tầng DAO để xác thực tài khoản
         NguoiDung nguoiDung = nguoiDungDAO.dangNhap(username, password);
         if (nguoiDung != null) {
-            JOptionPane.showMessageDialog(this,
-                    "Đăng nhập thành công! Chào mừng " + username + ".",
-                    "Thành công",
-                    JOptionPane.INFORMATION_MESSAGE);
-            chuyenManHinh(new TrangChuFrame(username));
+            // Kiểm tra trạng thái khóa tài khoản
+            if (nguoiDung.daBiKhoa()) {
+                JOptionPane.showMessageDialog(this,
+                        "Tài khoản '" + username + "' hiện đang BỊ KHÓA bởi Quản trị viên!\nVui lòng liên hệ Admin để được hỗ trợ mở khóa.",
+                        "Tài khoản bị khóa",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Phân quyền điều hướng: Admin vào Admin Panel, User vào Trang chủ
+            if (nguoiDung.laAdmin()) {
+                JOptionPane.showMessageDialog(this,
+                        "Đăng nhập thành công với quyền QUẢN TRỊ VIÊN (ADMIN)!\nChào mừng " + username + ".",
+                        "Đăng nhập Admin",
+                        JOptionPane.INFORMATION_MESSAGE);
+                chuyenManHinh(new AdminTrangChuFrame(username));
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Đăng nhập thành công! Chào mừng " + username + ".",
+                        "Thành công",
+                        JOptionPane.INFORMATION_MESSAGE);
+                chuyenManHinh(new TrangChuFrame(username));
+            }
         } else {
             JOptionPane.showMessageDialog(this,
                     "Tên đăng nhập hoặc mật khẩu không chính xác!",
