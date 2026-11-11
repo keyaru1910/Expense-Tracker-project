@@ -83,6 +83,12 @@ public class DangKyFrame extends BaseFrame {
         btnDangKy.setFont(fontNut);
         btnQuayLai.setFont(fontNut);
 
+        // Gợi ý định dạng (Tooltip) khi người dùng di chuột vào ô nhập liệu
+        txtTenDangNhap.setToolTipText("Từ 3 đến 25 ký tự (chữ cái, chữ số, gạch dưới _)");
+        txtEmail.setToolTipText("Bắt buộc phải có đuôi @gmail.com (ví dụ: hoten@gmail.com)");
+        txtMatKhau.setToolTipText("Tối thiểu 6 ký tự, gồm cả chữ, số và ký tự đặc biệt (!@#$%...)");
+        txtXacNhanMatKhau.setToolTipText("Nhập lại chính xác mật khẩu đã đặt");
+
         int labelX = 80, fieldX = 260, yStart = 125, widthLabel = 160, widthField = 310, height = 36, gap = 48;
 
         lblLogo.setBounds(302, 14, 56, 56);
@@ -130,56 +136,37 @@ public class DangKyFrame extends BaseFrame {
     }
 
     private void xuLyDangKy() {
-        String username = txtTenDangNhap.getText().trim();
+        String tenDangNhap = txtTenDangNhap.getText().trim();
         String email = txtEmail.getText().trim();
-        String password = new String(txtMatKhau.getPassword());
-        String confirmPassword = new String(txtXacNhanMatKhau.getPassword());
+        String matKhau = new String(txtMatKhau.getPassword());
+        String xacNhanMatKhau = new String(txtXacNhanMatKhau.getPassword());
 
-        if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Vui lòng điền đầy đủ tất cả các trường thông tin!",
-                    "Cảnh báo",
-                    JOptionPane.WARNING_MESSAGE);
+        // Kiểm tra tính hợp lệ của tất cả các trường dữ liệu theo quy định
+        if (!kiemTraDuLieuDauVao(tenDangNhap, email, matKhau, xacNhanMatKhau)) {
             return;
         }
 
-        if (!password.equals(confirmPassword)) {
+        // Kiểm tra xem tên đăng nhập hoặc email đã tồn tại trong CSDL chưa
+        if (nguoiDungDAO.kiemTraTonTai(tenDangNhap, email)) {
             JOptionPane.showMessageDialog(this,
-                    "Mật khẩu xác nhận không trùng khớp!",
-                    "Cảnh báo",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            JOptionPane.showMessageDialog(this,
-                    "Địa chỉ email không đúng định dạng hợp lệ!",
-                    "Cảnh báo",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        // Kiểm tra xem username hoặc email đã tồn tại chưa
-        if (nguoiDungDAO.kiemTraTonTai(username, email)) {
-            JOptionPane.showMessageDialog(this,
-                    "Tên đăng nhập hoặc email đã được sử dụng. Vui lòng chọn tên khác!",
-                    "Lỗi trùng lặp",
+                    "Tên đăng nhập hoặc email đã được sử dụng. Vui lòng chọn tên hoặc email khác!",
+                    "Lỗi trùng lặp dữ liệu",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         // Tạo đối tượng NguoiDung và lưu qua DAO
-        NguoiDung nguoiDungMoi = new NguoiDung(username, password, email);
+        NguoiDung nguoiDungMoi = new NguoiDung(tenDangNhap, matKhau, email);
         boolean thanhCong = nguoiDungDAO.dangKy(nguoiDungMoi);
 
         if (thanhCong) {
             // Tự động khởi tạo bộ danh mục mẫu cho người dùng mới
-            danhMucDAO.khoiTaoDanhMucNeuChuaCo(username);
+            danhMucDAO.khoiTaoDanhMucNeuChuaCo(tenDangNhap);
 
             // Tự động khởi tạo 2 ví mặc định (Ví Tiền mặt và Tài khoản Ngân hàng)
             int userId = nguoiDungMoi.getId();
             if (userId <= 0) {
-                userId = nguoiDungDAO.layIdTheoUsername(username);
+                userId = nguoiDungDAO.layIdTheoUsername(tenDangNhap);
             }
             if (userId > 0) {
                 viTienDAO.khoiTaoViMacDinh(userId);
@@ -196,6 +183,93 @@ public class DangKyFrame extends BaseFrame {
                     "Lỗi",
                     JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    /**
+     * Xác thực dữ liệu đầu vào cho các trường thông tin đăng ký:
+     * 1. Không để trống trường nào.
+     * 2. Tên đăng nhập: 3-25 ký tự, chỉ gồm chữ cái, số và gạch dưới.
+     * 3. Email: Định dạng hợp lệ và bắt buộc phải có đuôi @gmail.com.
+     * 4. Mật khẩu: Tối thiểu 6 ký tự, phải có chữ cái, chữ số và ký tự đặc biệt.
+     * 5. Xác nhận mật khẩu: Phải trùng khớp với mật khẩu.
+     *
+     * @return true nếu dữ liệu hợp lệ, ngược lại false
+     */
+    private boolean kiemTraDuLieuDauVao(String tenDangNhap, String email, String matKhau, String xacNhanMatKhau) {
+        // 1. Kiểm tra các trường rỗng
+        if (tenDangNhap.isEmpty() || email.isEmpty() || matKhau.isEmpty() || xacNhanMatKhau.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Vui lòng điền đầy đủ tất cả các trường thông tin!",
+                    "Cảnh báo",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        // 2. Kiểm tra định dạng Tên đăng nhập
+        if (!tenDangNhap.matches("^[a-zA-Z0-9_]{3,25}$")) {
+            JOptionPane.showMessageDialog(this,
+                    "Tên đăng nhập không hợp lệ!\n" +
+                    "- Độ dài từ 3 đến 25 ký tự.\n" +
+                    "- Chỉ cho phép chữ cái (a-z, A-Z), chữ số (0-9) và dấu gạch dưới (_).\n" +
+                    "- Không được chứa khoảng trắng hoặc ký tự đặc biệt khác.",
+                    "Lỗi tên đăng nhập",
+                    JOptionPane.WARNING_MESSAGE);
+            txtTenDangNhap.requestFocus();
+            return false;
+        }
+
+        // 3. Kiểm tra định dạng Email (yêu cầu chuẩn @gmail.com)
+        String regexEmailGmail = "^[a-zA-Z0-9._%+-]+@gmail\\.com$";
+        if (!email.toLowerCase().matches(regexEmailGmail)) {
+            JOptionPane.showMessageDialog(this,
+                    "Email không hợp lệ!\n" +
+                    "- Email bắt buộc phải có đuôi '@gmail.com'\n" +
+                    "- Ví dụ: user@gmail.com, nguyenvana@gmail.com",
+                    "Lỗi định dạng Email",
+                    JOptionPane.WARNING_MESSAGE);
+            txtEmail.requestFocus();
+            return false;
+        }
+
+        // 4. Kiểm tra độ dài Mật khẩu tối thiểu
+        if (matKhau.length() < 6) {
+            JOptionPane.showMessageDialog(this,
+                    "Mật khẩu quá ngắn! Mật khẩu phải có độ dài tối thiểu 6 ký tự.",
+                    "Lỗi mật khẩu",
+                    JOptionPane.WARNING_MESSAGE);
+            txtMatKhau.requestFocus();
+            return false;
+        }
+
+        // Kiểm tra thành phần mật khẩu: có chữ, có số, có ký tự đặc biệt
+        boolean coChuCai = matKhau.matches(".*[a-zA-Z].*");
+        boolean coChuSo = matKhau.matches(".*[0-9].*");
+        boolean coKyTuDacBiet = matKhau.matches(".*[^a-zA-Z0-9].*");
+
+        if (!coChuCai || !coChuSo || !coKyTuDacBiet) {
+            JOptionPane.showMessageDialog(this,
+                    "Mật khẩu chưa đủ độ an toàn!\n" +
+                    "Mật khẩu bắt buộc phải có đủ 3 yếu tố:\n" +
+                    "✓ Có ký tự chữ cái (a-z, A-Z)\n" +
+                    "✓ Có ký tự số (0-9)\n" +
+                    "✓ Có ký tự đặc biệt (ví dụ: @, #, $, %, !, *, &, ...)",
+                    "Lỗi độ phức tạp mật khẩu",
+                    JOptionPane.WARNING_MESSAGE);
+            txtMatKhau.requestFocus();
+            return false;
+        }
+
+        // 5. Kiểm tra Xác nhận mật khẩu trùng khớp
+        if (!matKhau.equals(xacNhanMatKhau)) {
+            JOptionPane.showMessageDialog(this,
+                    "Mật khẩu xác nhận không trùng khớp! Vui lòng nhập lại.",
+                    "Cảnh báo",
+                    JOptionPane.WARNING_MESSAGE);
+            txtXacNhanMatKhau.requestFocus();
+            return false;
+        }
+
+        return true;
     }
 }
 

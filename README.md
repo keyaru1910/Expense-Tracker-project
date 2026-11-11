@@ -12,19 +12,16 @@
 
 ---
 
-## 📷 Hình Ảnh Minh Họa Giao Diện
+## 🎬 Video Demo Trải Nghiệm Ứng Dụng
 
-| Đăng Nhập | Đăng Ký Tài Khoản |
-| :---: | :---: |
-| ![Màn hình đăng nhập](assets/login.png)<br>_Màn hình đăng nhập hỗ trợ phân quyền Admin/User_ | ![Màn hình đăng ký](assets/register.png)<br>_Biểu mẫu tạo tài khoản người dùng mới (tự cấp danh mục & ví)_ |
+> 📹 **Xem video thực tế các thao tác và tính năng của Smart Expense Tracker:**
 
-| Trang Chủ (Dashboard 2 Cột) | Thêm Khoản Thu / Chi |
-| :---: | :---: |
-| ![Trang chủ](assets/homepage.png)<br>_Bảng điều khiển chính, điều hướng Đa ví, Báo cáo và Theme_ | ![Thêm giao dịch](assets/addexpense.png)<br>_Giao diện thêm giao dịch với chọn Ví nguồn và nút bấm số tiền nhanh_ |
-
-| Lịch Sử Giao Dịch | Thống Kê & Phân Tích Biểu Đồ |
-| :---: | :---: |
-| ![Danh sách giao dịch](assets/transactions.png)<br>_Hiển thị ví thanh toán, tìm kiếm, lọc và cảnh báo số dư an toàn_ | ![Biểu đồ phân tích](assets/Analytics.png)<br>_Biểu đồ cột so sánh thu - chi theo 12 tháng, hỗ trợ lọc theo năm_ |
+<div align="center">
+  <video src="assets/demo.mp4" controls="controls" width="100%" style="max-width: 860px; border-radius: 8px;">
+    Trình duyệt hoặc trình xem Markdown của bạn không hỗ trợ phát trực tiếp thẻ video HTML5. Bạn có thể <a href="assets/demo.mp4">nhấn vào đây để xem hoặc tải tệp video demo.mp4</a>.
+  </video>
+  <p><em>(Nếu trình xem không hỗ trợ xem video trực tiếp, bạn có thể mở tệp: <a href="assets/demo.mp4">assets/demo.mp4</a>)</em></p>
+</div>
 
 ---
 
